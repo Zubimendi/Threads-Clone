@@ -10,11 +10,10 @@ import {
 import { useOAuth } from "@clerk/clerk-expo";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useNavigation } from "expo-router";
 export default function Index() {
-  const data = useQuery(api.users.getUsers)
-
+  
+  const navigator = useNavigation()
   // console.log("Users",data)
   const { startOAuthFlow: startGoogleOAuthFlow } = useOAuth({
     strategy: "oauth_google",
@@ -44,6 +43,7 @@ export default function Index() {
       console.log(error);
     }
   };
+  
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -101,7 +101,7 @@ export default function Index() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigator.navigate("(auth)")}>
             <Text style={styles.switchAccountsButtonText}>Switch Accounts</Text>
           </TouchableOpacity>
         </View>
@@ -109,6 +109,7 @@ export default function Index() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
