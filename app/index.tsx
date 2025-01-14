@@ -10,10 +10,9 @@ import {
 import { useOAuth } from "@clerk/clerk-expo";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 export default function Index() {
-  
-  const navigator = useNavigation()
+  const router = useRouter();
   // console.log("Users",data)
   const { startOAuthFlow: startGoogleOAuthFlow } = useOAuth({
     strategy: "oauth_google",
@@ -27,6 +26,7 @@ export default function Index() {
       const { createdSessionId, setActive } = await startFacebookOAuthFlow();
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
+        router.push("/(auth)/(tabs)/feed");
       }
     } catch (error) {
       console.log(error);
@@ -43,7 +43,7 @@ export default function Index() {
       console.log(error);
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -54,7 +54,10 @@ export default function Index() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>How would you like to sign in?</Text>
         <View style={styles.loginButtonContainer}>
-          <TouchableOpacity style={styles.loginButton} onPress={handleFacebookLogin}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleFacebookLogin}
+          >
             <View style={styles.loginButtonContent}>
               <Image
                 source={require("@/assets/images/instagram_icon.webp")}
@@ -75,7 +78,10 @@ export default function Index() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleGoogleLogin}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleGoogleLogin}
+          >
             <View style={styles.loginButtonContent}>
               <Text style={styles.loginButtonText}>Continue with Google</Text>
               <Ionicons
@@ -101,7 +107,7 @@ export default function Index() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigator.navigate("(auth)")}>
+          <TouchableOpacity>
             <Text style={styles.switchAccountsButtonText}>Switch Accounts</Text>
           </TouchableOpacity>
         </View>
@@ -109,7 +115,6 @@ export default function Index() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

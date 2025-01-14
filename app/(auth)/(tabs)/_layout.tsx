@@ -1,14 +1,19 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { useAuth } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
+import * as Haptics from "expo-haptics";
 
 const styles = StyleSheet.create({
   createIconBackground: {
     backgroundColor: Colors.itemBackground,
-  }
-})
+    padding: 2,
+    borderRadius: 10,
+  },
+});
 
 const CreateTabIcon = ({
   color,
@@ -20,7 +25,7 @@ const CreateTabIcon = ({
   focused: boolean;
 }) => {
   return (
-    <View>
+    <View style={styles.createIconBackground}>
       <Ionicons
         name={focused ? "add" : "add-outline"}
         color={color}
@@ -31,6 +36,8 @@ const CreateTabIcon = ({
 };
 
 const Layout = () => {
+  const { signOut } = useAuth();
+  const router = useRouter();
   return (
     <Tabs
       screenOptions={{
@@ -75,6 +82,13 @@ const Layout = () => {
           ),
           title: "Create",
         }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            Haptics.selectionAsync();
+            router.push("/(auth)/(modal)/create");
+          },
+        }}
       />
       <Tabs.Screen
         name="search"
@@ -94,13 +108,23 @@ const Layout = () => {
       <Tabs.Screen
         name="profile"
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
               color={color}
               size={size}
             />
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                signOut();
+                router.replace("/");
+              }}
+            >
+              <Ionicons name="log-out" size={24} />
+            </TouchableOpacity>
           ),
           title: "Profile",
         }}
