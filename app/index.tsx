@@ -11,9 +11,9 @@ import { useOAuth } from "@clerk/clerk-expo";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import * as Linking from "expo-linking";
 export default function Index() {
   const router = useRouter();
-  // console.log("Users",data)
   const { startOAuthFlow: startGoogleOAuthFlow } = useOAuth({
     strategy: "oauth_google",
   });
@@ -23,7 +23,9 @@ export default function Index() {
 
   const handleFacebookLogin = async () => {
     try {
-      const { createdSessionId, setActive } = await startFacebookOAuthFlow();
+      const { createdSessionId, setActive } = await startFacebookOAuthFlow({
+        redirectUrl: Linking.createURL("/feed", { scheme: "myapp" }),
+      });
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
         router.push("/(auth)/(tabs)/feed");
