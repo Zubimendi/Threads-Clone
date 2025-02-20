@@ -13,8 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "package": "com.expodrilla.threads"
     },
@@ -25,6 +24,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "threads-clone",
+          "organization": "vaultive-a9"
+        }
+      ],
       [
         "expo-splash-screen",
         {

@@ -29,3 +29,24 @@ export const createUsers = internalMutation({
     return userId;
   },
 });
+
+export const getUserByClerkId = query({
+  args: {
+    clerkId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .unique();
+  },
+});
+
+export const getUserById = query({
+  args: {
+    userId: v.id('users'),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId)
+  },
+});

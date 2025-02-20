@@ -1,5 +1,10 @@
-import { Slot, Stack, useRouter, useSegments } from "expo-router";
-import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
+import { Slot, Stack, useRouter, useSegments, usePathname } from "expo-router";
+import {
+  ClerkProvider,
+  ClerkLoaded,
+  useAuth,
+  useUser,
+} from "@clerk/clerk-expo";
 import { tokenCache } from "@/utils/cache";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,6 +16,21 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  attachScreenshot: true,
+  debug: false,
+  tracesSampleRate: 1.0,
+  _experiments: {
+    profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
+  },
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,6 +48,8 @@ const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const pathName = usePathname();
+  const user = useUser();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -35,7 +57,7 @@ const InitialLayout = () => {
 
     console.log("Segments:", segments);
     console.log("Is Signed In:", isSignedIn);
-    console.log("Current Route:", router.pathname);
+    console.log("Current Route:", pathName);
 
     if (isSignedIn && !inAuthGroup) {
       router.replace("/(auth)/(tabs)/feed");
@@ -49,6 +71,17 @@ const InitialLayout = () => {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    if (user && user.user) {
+      Sentry.setUser({
+        email: user.user.emailAddresses[0].emailAddress,
+        id: user.user.id,
+      });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [user]);
 
   return (
     <Stack>
@@ -65,7 +98,7 @@ if (!clerkPublishableKey) {
   );
 }
 
-export default function RootLayout() {
+const RootLayout = () => {
   return (
     <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
       <ClerkLoaded>
@@ -75,4 +108,6 @@ export default function RootLayout() {
       </ClerkLoaded>
     </ClerkProvider>
   );
-}
+};
+
+export default Sentry.wrap(RootLayout);
