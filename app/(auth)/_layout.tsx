@@ -34,6 +34,7 @@ const Layout = () => {
         options={{
           presentation: "modal", // Use 'transparentModal' if needed
           title: "Edit Profile",
+          headerTitleAlign: "center",
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => router.dismiss()}
