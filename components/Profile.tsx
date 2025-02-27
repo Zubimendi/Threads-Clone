@@ -70,13 +70,17 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
             ) : (
               <UserProfile userId={userProfile?._id} />
             )}
-            <Tabs onTabChange={() => {console.log("Cap")}} />
+            <Tabs
+              onTabChange={() => {
+                console.log("Cap");
+              }}
+            />
           </>
         )}
       />
     </View>
   );
-};
+}; 
 
 export default Profile;
 

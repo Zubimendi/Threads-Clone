@@ -29,6 +29,21 @@ const Layout = () => {
           headerBackVisible: false, // Ensure the back button is hidden
         }}
       />
+      <Stack.Screen
+        name="(modal)/edit-profile"
+        options={{
+          presentation: "modal", // Use 'transparentModal' if needed
+          title: "Edit Profile",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.dismiss()}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          ),
+          headerBackVisible: false, // Ensure the back button is hidden
+        }}
+      />
     </Stack>
   );
 };

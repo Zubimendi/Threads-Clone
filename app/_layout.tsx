@@ -1,4 +1,4 @@
-import { Slot, Stack, useRouter, useSegments, usePathname } from "expo-router";
+import { Slot, Stack, useRouter, useSegments, usePathname, useNavigationContainerRef } from "expo-router";
 import {
   ClerkProvider,
   ClerkLoaded,
@@ -91,6 +91,8 @@ const InitialLayout = () => {
   );
 };
 
+const routingInstrumentation = Sentry.reactNavigationIntegration()
+
 const clerkPublishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 if (!clerkPublishableKey) {
   throw new Error(
@@ -99,6 +101,11 @@ if (!clerkPublishableKey) {
 }
 
 const RootLayout = () => {
+  const ref = useNavigationContainerRef()
+  useEffect(() => {
+    routingInstrumentation.registerNavigationContainer(ref)
+  }, [ref])
+  
   return (
     <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
       <ClerkLoaded>

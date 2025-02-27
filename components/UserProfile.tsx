@@ -11,6 +11,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { Link } from "expo-router";
 
 type UserProfileProps = {
   userId?: Id<"users">;
@@ -50,12 +51,26 @@ const UserProfile = ({ userId }: UserProfileProps) => {
       <View style={styles.buttonRow}>
         {isSelf && (
           <>
-            <TouchableOpacity style={[styles.button, styles.buttonFlex]}>
-              <Text style={styles.buttonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.buttonFlex]}>
-              <Text style={styles.buttonText}>Share Profile</Text>
-            </TouchableOpacity>
+            <View>
+              <Link
+                href={`/(auth)/(modal)/edit-profile?userId=${profile?._id || ''}&imgUrl=${profile?.imageUrl ? encodeURIComponent(profile.imageUrl) : ''}&biostring=${profile?.bio ? encodeURIComponent(profile.bio) : ''}&linkstring=${profile?.websiteUrl ? encodeURIComponent(profile.websiteUrl) : ''}`}
+                asChild
+              >
+                <TouchableOpacity style={styles.button}>
+                  <Text style={styles.buttonText}>Edit Profile</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+            <View>
+              <Link
+                href={"/"}
+                asChild
+              >
+                <TouchableOpacity style={styles.button}>
+                  <Text style={styles.buttonText}>Share Profile</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </>
         )}
       </View>
@@ -63,12 +78,20 @@ const UserProfile = ({ userId }: UserProfileProps) => {
       <View style={styles.buttonRow}>
         {!isSelf && (
           <>
-            <TouchableOpacity style={[styles.fullButton, styles.buttonFlex]}>
-              <Text style={styles.fullButtonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.fullButton, styles.buttonFlex]}>
-              <Text style={styles.fullButtonText}>Share Profile</Text>
-            </TouchableOpacity>
+            <View>
+              <Link href={"/"} asChild>
+                <TouchableOpacity style={styles.fullButton}>
+                  <Text style={styles.fullButtonText}>Follow</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+            <View>
+              <Link href={"/"} asChild>
+                <TouchableOpacity style={styles.fullButton}>
+                  <Text style={styles.fullButtonText}>Mention</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </>
         )}
       </View>
@@ -126,40 +149,49 @@ const styles = StyleSheet.create({
     gap: width * 0.03,
     justifyContent: "space-evenly",
     marginTop: width * 0.04,
-    flexWrap: "wrap",
   },
   button: {
     backgroundColor: "#f0f0f0",
     paddingVertical: width * 0.02,
-    paddingHorizontal: width * 0.04,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    minWidth: width * 0.25,
-  },
-  buttonFlex: {
-    flex: 1,
-    maxWidth: 200,
-  },
-  buttonText: {
-    fontSize: Math.max(14, width * 0.035),
-    fontWeight: "500",
-    color: "#333",
-    textAlign: "center",
+    paddingHorizontal: width * 0.06, // increased horizontal padding
+    borderRadius: 8, // reduced border radius
+    minWidth: width * 0.4, // increased minimum width
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 2,
   },
   fullButton: {
     backgroundColor: "#000",
     paddingVertical: width * 0.02,
-    paddingHorizontal: width * 0.04,
-    borderRadius: 20,
+    paddingHorizontal: width * 0.06, // increased horizontal padding
+    borderRadius: 8, // reduced border radius
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    minWidth: width * 0.25,
+    borderColor: '#000',
+    minWidth: width * 0.4, // increased minimum width
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 3,
   },
   fullButtonText: {
     fontSize: Math.max(14, width * 0.035),
     fontWeight: "500",
     color: "#fff",
+    textAlign: "center",
+  },
+  buttonText: {
+    fontSize: Math.max(14, width * 0.035),
+    fontWeight: "500",
+    color: "#000",
     textAlign: "center",
   },
 });
