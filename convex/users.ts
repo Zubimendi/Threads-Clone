@@ -56,21 +56,28 @@ export const getUserById = query({
   },
 });
 
-export const updateUser = internalMutation({
+export const updateUser = mutation({
   args: {
     _id: v.id("users"),
     bio: v.optional(v.string()),
     websiteUrl: v.optional(v.string()),
-    profilePicture: v.optional(v.string()),
+    imageUrl: v.optional(v.id("_storage")),
     pushToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await getCurrentUserOrThrow(ctx);
     return await ctx.db.patch(args._id, args);
   },
 });
 
-// IDENTITY CHECK
+export const generateUploadUrl = mutation({
+  handler: async (ctx) => {
+    await getCurrentUserOrThrow(ctx);
+    await ctx.storage.generateUploadUrl();
+  },
+});
 
+// IDENTITY CHECK
 export const current = query({
   args: {},
   handler: async (ctx) => {

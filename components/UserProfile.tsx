@@ -12,6 +12,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { Link } from "expo-router";
+import { Colors } from "@/constants/Colors";
 
 type UserProfileProps = {
   userId?: Id<"users">;
@@ -47,13 +48,13 @@ const UserProfile = ({ userId }: UserProfileProps) => {
         {profile?.followersCount} followers •{" "}
         {profile?.websiteUrl || "No Website"}
       </Text>
-
+    
       <View style={styles.buttonRow}>
         {isSelf && (
           <>
             <View>
               <Link
-                href={`/(auth)/(modal)/edit-profile?userId=${profile?._id || ''}&imgUrl=${profile?.imageUrl ? encodeURIComponent(profile.imageUrl) : ''}&biostring=${profile?.bio ? encodeURIComponent(profile.bio) : ''}&linkstring=${profile?.websiteUrl ? encodeURIComponent(profile.websiteUrl) : ''}`}
+                href={`/(auth)/(modal)/edit-profile?userId=${profile?._id || ""}&imgUrl=${profile?.imageUrl ? encodeURIComponent(profile.imageUrl) : ""}&biostring=${profile?.bio ? encodeURIComponent(profile.bio) : ""}&linkstring=${profile?.websiteUrl ? encodeURIComponent(profile.websiteUrl) : ""}`}
                 asChild
               >
                 <TouchableOpacity style={styles.button}>
@@ -62,10 +63,7 @@ const UserProfile = ({ userId }: UserProfileProps) => {
               </Link>
             </View>
             <View>
-              <Link
-                href={"/"}
-                asChild
-              >
+              <Link href={"/"} asChild>
                 <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Share Profile</Text>
                 </TouchableOpacity>
@@ -152,6 +150,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#f0f0f0",
+    borderWidth: 1,
+    borderColor: Colors.border,
     paddingVertical: width * 0.02,
     paddingHorizontal: width * 0.06, // increased horizontal padding
     borderRadius: 8, // reduced border radius
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.06, // increased horizontal padding
     borderRadius: 8, // reduced border radius
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: "#000",
     minWidth: width * 0.4, // increased minimum width
     shadowColor: "#000",
     shadowOffset: {
